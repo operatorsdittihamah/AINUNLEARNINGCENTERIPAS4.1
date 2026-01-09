@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Game Kuis IPAS Kelas 4</title>
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI', sans-serif;
+    background:linear-gradient(135deg,#4caf50,#81c784);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    background:white;
+    width:90%;
+    max-width:750px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+    padding:25px;
+}
+
+.header-img{
+    text-align:center;
+}
+.header-img img{
+    width:150px;
+    margin-bottom:10px;
+}
+
+h1{
+    text-align:center;
+    color:#2e7d32;
+}
+
+#question{
+    font-size:20px;
+    margin:20px 0;
+}
+
+.option{
+    background:#f1f8e9;
+    border:2px solid #c5e1a5;
+    padding:12px;
+    border-radius:10px;
+    margin:10px 0;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.option:hover{ background:#dcedc8; }
+.option.correct{ background:#4caf50; color:white; }
+.option.wrong{ background:#f44336; color:white; }
+
+#nextBtn{
+    margin-top:20px;
+    padding:12px;
+    width:100%;
+    font-size:16px;
+    border:none;
+    border-radius:10px;
+    background:#2e7d32;
+    color:white;
+    cursor:pointer;
+    display:none;
+}
+
+#scoreBox{
+    text-align:center;
+    font-size:20px;
+    display:none;
+}
+
+#answerKey{
+    text-align:left;
+    margin-top:20px;
+    font-size:14px;
+}
+
+small{ color:#555; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-img">
+        <img src="ainun.png" alt="IPAS">
+    </div>
+    <h1>🎮 Kuis IPAS Kelas 4</h1>
+    <small>Semester 2 – Kurikulum Merdeka</small>
+
+    <div id="questionBox">
+        <div id="question"></div>
+        <div id="options"></div>
+        <button id="nextBtn">Soal Berikutnya ➡️</button>
+    </div>
+
+    <div id="scoreBox"></div>
+</div>
+
+<script>
+const quiz = [
+{q:"Sumber energi utama bagi kehidupan di Bumi adalah ....", o:["Air","Angin","Matahari","Batu bara"], a:2},
+{q:"Perubahan energi listrik menjadi energi panas terjadi pada ....", o:["Kipas angin","Setrika","Televisi","Radio"], a:1},
+{q:"Tumbuhan hijau membuat makanan melalui proses ....", o:["Respirasi","Fotosintesis","Fermentasi","Adaptasi"], a:1},
+{q:"Fungsi akar pada tumbuhan adalah ....", o:["Menyerap air dan zat hara","Tempat fotosintesis","Alat perkembangbiakan","Melindungi daun"], a:0},
+{q:"Hewan pemakan tumbuhan disebut ....", o:["Karnivora","Omnivora","Herbivora","Insektivora"], a:2},
+{q:"Rantai makanan dimulai dari ....", o:["Hewan","Pengurai","Tumbuhan","Manusia"], a:2},
+{q:"Perubahan wujud es menjadi air disebut ....", o:["Menguap","Mencair","Membeku","Mengembun"], a:1},
+{q:"Alat indera untuk melihat adalah ....", o:["Kulit","Hidung","Telinga","Mata"], a:3},
+{q:"Benda yang dapat menghantarkan panas disebut ....", o:["Isolator","Konduktor","Elastis","Magnet"], a:1},
+{q:"Contoh sumber energi alternatif adalah ....", o:["Minyak bumi","Batu bara","Matahari","Gas alam"], a:2},
+{q:"Gaya yang menyebabkan benda jatuh ke bumi adalah ....", o:["Gesek","Magnet","Otot","Gravitasi"], a:3},
+{q:"Bagian tumbuhan tempat fotosintesis adalah ....", o:["Akar","Batang","Daun","Bunga"], a:2},
+{q:"Hewan yang aktif di malam hari disebut ....", o:["Diurnal","Nokturnal","Herbivora","Omnivora"], a:1},
+{q:"Perubahan energi listrik menjadi gerak terjadi pada ....", o:["Lampu","Setrika","Kipas angin","Rice cooker"], a:2},
+{q:"Energi yang tersimpan dalam makanan disebut energi ....", o:["Panas","Gerak","Kimia","Cahaya"], a:2},
+{q:"Bagian tumbuhan yang berfungsi sebagai alat perkembangbiakan adalah ....", o:["Akar","Batang","Daun","Bunga"], a:3},
+{q:"Bunyi dapat merambat melalui ....", o:["Ruang hampa","Udara","Cahaya","Api"], a:1},
+{q:"Perubahan air menjadi uap disebut ....", o:["Mencair","Mengembun","Menguap","Membeku"], a:2},
+{q:"Hewan pemakan daging disebut ....", o:["Herbivora","Omnivora","Karnivora","Insektivora"], a:2},
+{q:"Contoh gaya otot dalam kehidupan sehari-hari adalah ....", o:["Buah jatuh","Magnet menarik paku","Menendang bola","Kipas berputar"], a:2},
+{q:"Awan terbentuk melalui proses ....", o:["Penguapan","Pengembunan","Presipitasi","Infiltrasi"], a:1},
+{q:"Sumber energi terbesar di bumi adalah ....", o:["Air","Angin","Matahari","Api"], a:2},
+{q:"Bagian tumbuhan yang mengangkut air adalah ....", o:["Daun","Bunga","Batang","Buah"], a:2},
+{q:"Contoh hewan omnivora adalah ....", o:["Sapi","Harimau","Ayam","Kelinci"], a:2},
+{q:"Gaya gesek terjadi ketika dua benda ....", o:["Berjauhan","Bersentuhan","Berat","Ringan"], a:1},
+{q:"Perubahan energi pada lampu adalah ....", o:["Listrik ke panas","Listrik ke cahaya","Cahaya ke listrik","Panas ke listrik"], a:1},
+{q:"Fungsi daun bagi tumbuhan adalah ....", o:["Menyerap air","Fotosintesis","Perkembangbiakan","Penyokong"], a:1},
+{q:"Hewan yang hidup di air disebut ....", o:["Terestrial","Amfibi","Akuatik","Arboreal"], a:2},
+{q:"Pelangi terbentuk karena ....", o:["Pembiasan cahaya","Pemantulan bunyi","Gaya gravitasi","Energi panas"], a:0},
+{q:"Contoh perubahan wujud mengembun adalah ....", o:["Air jadi es","Uap jadi air","Air jadi uap","Es jadi air"], a:1},
+{q:"Bunyi dihasilkan oleh benda yang ....", o:["Diam","Bergetar","Panas","Basah"], a:1},
+{q:"Sumber energi dari air disebut ....", o:["PLTB","PLTS","PLTA","PLTG"], a:2},
+{q:"Bagian telinga yang berfungsi menerima bunyi adalah ....", o:["Gendang telinga","Rumah siput","Saluran eustachius","Daun telinga"], a:3},
+{q:"Contoh adaptasi tumbuhan adalah ....", o:["Paruh elang","Kaki bebek","Daun kaktus berbentuk duri","Cakar harimau"], a:2},
+{q:"Energi panas banyak dimanfaatkan untuk ....", o:["Menerangi","Mendinginkan","Memasak","Menghitung"], a:2},
+{q:"Bagian tumbuhan yang melindungi biji adalah ....", o:["Akar","Batang","Buah","Daun"], a:2},
+{q:"Contoh benda isolator adalah ....", o:["Besi","Aluminium","Kayu","Tembaga"], a:2},
+{q:"Gaya magnet dapat menarik benda dari bahan ....", o:["Plastik","Kayu","Kertas","Besi"], a:3},
+{q:"Contoh perubahan energi kimia menjadi gerak adalah ....", o:["Lampu menyala","Kipas berputar","Manusia berjalan","Setrika panas"], a:2}
+];
+
+let index = 0;
+let score = 0;
+let answered = false;
+
+const question = document.getElementById("question");
+const options = document.getElementById("options");
+const nextBtn = document.getElementById("nextBtn");
+const scoreBox = document.getElementById("scoreBox");
+
+function loadQuestion(){
+    answered = false;
+    nextBtn.style.display = "none";
+    options.innerHTML = "";
+    question.innerHTML = (index+1)+". "+quiz[index].q;
+    quiz[index].o.forEach((opt,i)=>{
+        const div = document.createElement("div");
+        div.className = "option";
+        div.innerHTML = opt;
+        div.onclick = ()=>checkAnswer(div,i);
+        options.appendChild(div);
+    });
+}
+
+function checkAnswer(el,i){
+    if(answered) return;
+    answered = true;
+    const correct = quiz[index].a;
+    const all = document.querySelectorAll('.option');
+    if(i===correct){ el.classList.add('correct'); score++; }
+    else{ el.classList.add('wrong'); all[correct].classList.add('correct'); }
+    nextBtn.style.display='block';
+}
+
+nextBtn.onclick=()=>{ index++; index<quiz.length?loadQuestion():showScore(); };
+
+function showScore(){
+    document.getElementById('questionBox').style.display='none';
+    scoreBox.style.display='block';
+    const nilai = Math.round((score/quiz.length)*100);
+    let key='<h3>📘 Kunci Jawaban</h3><ol>';
+    quiz.forEach((q,i)=>{ key+=`<li>${q.o[q.a]}</li>`; });
+    key+='</ol>';
+    scoreBox.innerHTML=`<h2>🎉 Kuis Selesai!</h2><p>Jawaban Benar: ${score} dari ${quiz.length}</p><p><b>Nilai: ${nilai}</b></p><div id='answerKey'>${key}</div>`;
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
